@@ -3,9 +3,8 @@ from pyui.main import Ui_MainWindow
 from pyui.config import Ui_Configurator
 from pyui.streams import Ui_Streams
 from tools.config import ConfigTool
-import json
+from tools.ssh import SshTool
 import sys
-import os
 
 
 
@@ -57,6 +56,12 @@ class Ui(QtWidgets.QMainWindow):
 
 
         # bind buttons
+        self.ui.buttonTemplateAdd.clicked.connect(self.addTemplate)
+        self.ui.buttonTemplateEdit.clicked.connect(self.editTemplate)
+        self.ui.buttonTemplateDelete.clicked.connect(self.deleteTemplate)
+        self.ui.buttonDateDelete.clicked.connect(self.deleteDate)
+        self.ui.buttonDateSave.clicked.connect(self.saveDate)
+        
 
         self.show()
 
@@ -66,9 +71,25 @@ class Ui(QtWidgets.QMainWindow):
 
     def showStreams(self):
         streams = Streams(self)
-        print(streams)
         streams.show()
 
+
+    def addTemplate(self):
+        pass
+
+    def editTemplate(self):
+        pass
+
+    def deleteTemplate(self):
+        pass
+
+    def saveDate(self):
+        pass
+    
+    def deleteDate(self):
+        pass
+
+    
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
