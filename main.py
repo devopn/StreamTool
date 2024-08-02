@@ -11,7 +11,7 @@ from tools.template_editor import TemplateTool
 import sys
 import re
 
-
+ssh = SshTool()
 
 class Configurator(QtWidgets.QDialog):
 
@@ -47,6 +47,7 @@ class Streams(QtWidgets.QDialog):
         super(Streams, self).__init__(parent)
         self.ui = Ui_Streams()
         self.ui.setupUi(self)
+        
 
 class TemplateEditor(QtWidgets.QDialog):
 
@@ -109,6 +110,7 @@ class Ui(QtWidgets.QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        ssh.start()
 
         # bind menu elements
         self.ui.action_config.triggered.connect(self.showConfig)
@@ -154,13 +156,36 @@ class Ui(QtWidgets.QMainWindow):
         self.updateTemplates()
 
     def deleteTemplate(self):
-        pass
+        name = self.ui.listTemplates.currentItem().text()
+        # Ask
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setText("Удалить шаблон?")
+        msg.setWindowTitle("Подтверждение")
+        msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        msg.setDefaultButton(QtWidgets.QMessageBox.No)
+        result = msg.exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            TemplateTool.delete(name)
+            self.updateTemplates()
 
     def saveDate(self):
-        pass
+        date = self.ui.calendar.selectedDate().toString("dd.MM.yyyy")
+        print(date)
     
     def deleteDate(self):
-        pass
+        date = self.ui.calendar.selectedDate().toString("dd.MM.yyyy")
+        # ask
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setText("Удалить дату?")
+        msg.setWindowTitle("Подтверждение")
+        msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        msg.setDefaultButton(QtWidgets.QMessageBox.No)
+        result = msg.exec_()
+        if result == QtWidgets.QMessageBox.Yes:
+            ssh.delete_stream(date)
+
 
     
 
