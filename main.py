@@ -1,10 +1,15 @@
+from itertools import tee
 from PyQt5 import QtWidgets, QtCore
 from pyui.main import Ui_MainWindow
 from pyui.config import Ui_Configurator
 from pyui.streams import Ui_Streams
+from pyui.template import Ui_Template
+
 from tools.config import ConfigTool
 from tools.ssh import SshTool
+from tools.template_editor import TemplateTool
 import sys
+import re
 
 
 
@@ -43,6 +48,61 @@ class Streams(QtWidgets.QDialog):
         self.ui = Ui_Streams()
         self.ui.setupUi(self)
 
+class TemplateEditor(QtWidgets.QDialog):
+
+    def __init__(self, parent=None, name=None):
+        super(TemplateEditor, self).__init__(parent)
+        self.ui = Ui_Template()
+        self.ui.setupUi(self)
+        self.ui.buttonSave.clicked.connect(self.save)
+        if name:
+            data = TemplateTool.read()
+            self.ui.edit_title.setText(name)
+            templates = data.get(name)
+            if templates:
+                for i, template in enumerate(templates):
+                    self.ui.tableSchedule.insertRow(i)
+                    self.ui.tableSchedule.setItem(i, 0, QtWidgets.QTableWidgetItem(template.get("time")))
+                    self.ui.tableSchedule.setItem(i, 1, QtWidgets.QTableWidgetItem(str(template.get("duration"))))
+                    self.ui.tableSchedule.setItem(i, 2, QtWidgets.QTableWidgetItem(template.get("filename")))
+                    self.ui.tableSchedule.setItem(i, 3, QtWidgets.QTableWidgetItem(template.get("key")))
+    
+    def show_error(self, message):
+        QtWidgets.QMessageBox.critical(self, "Error", message)
+
+    def save(self):
+        table = self.ui.tableSchedule
+        data = []
+        for i in range(table.rowCount()):
+            a = table.item(i, 0)
+            b = table.item(i, 1)
+            c = table.item(i, 2)
+            d = table.item(i, 3)
+
+            if a:
+                if not a or not b or not c or not d:
+                    self.show_error("Заполните все поля в выбранных строках")
+                    return
+
+                if not re.match(r"^\d{2}:\d{2}$", a.text()):
+                    self.show_error("Неверное время в строке {}".format(i+1))
+                    return
+                
+                if not b.text().isdigit():
+                    self.show_error("Неверная длительность в строке {}".format(i+1))
+                    return
+
+                data.append({
+                    "time": a.text(),
+                    "duration": int(b.text()),
+                    "filename": c.text(),
+                    "key": d.text()
+                })
+        # print(data)
+        TemplateTool.write(self.ui.edit_title.text(), data)
+        self.close()
+
+
 class Ui(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -62,8 +122,14 @@ class Ui(QtWidgets.QMainWindow):
         self.ui.buttonDateDelete.clicked.connect(self.deleteDate)
         self.ui.buttonDateSave.clicked.connect(self.saveDate)
         
-
+        self.updateTemplates()
         self.show()
+
+    def updateTemplates(self):
+        templates = TemplateTool.read()
+        self.ui.listTemplates.clear()
+        for temp_name in templates.keys():
+            self.ui.listTemplates.addItem(temp_name)
 
     def showConfig(self):
         configurator = Configurator(self)
@@ -75,10 +141,17 @@ class Ui(QtWidgets.QMainWindow):
 
 
     def addTemplate(self):
-        pass
+        template = TemplateEditor(self)
+        template.show()
+        template.exec_()
+        self.updateTemplates()
 
     def editTemplate(self):
-        pass
+        name = self.ui.listTemplates.currentItem().text()
+        template = TemplateEditor(self, name)
+        template.show()
+        template.exec_()
+        self.updateTemplates()
 
     def deleteTemplate(self):
         pass

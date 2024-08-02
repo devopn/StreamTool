@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>669</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,12 +31,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdit"/>
+    <widget class="QLineEdit" name="edit_title"/>
    </item>
    <item>
     <widget class="QLabel" name="labelExample">
      <property name="text">
-      <string>Пример: | 16:00-17:30 | video1.flv | 47jh-eda2-uzh7...</string>
+      <string>Пример: | 16:00 | 220 | video1.flv | 47jh-eda2-uzh7...</string>
      </property>
     </widget>
    </item>
@@ -55,8 +55,20 @@
       <number>25</number>
      </property>
      <property name="columnCount">
-      <number>3</number>
+      <number>4</number>
      </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>150</number>
+     </attribute>
+     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
      <row/>
      <row/>
      <row/>
@@ -84,10 +96,16 @@
      <row/>
      <column>
       <property name="text">
-       <string>time</string>
+       <string>start</string>
       </property>
       <property name="icon">
-       <iconset theme="dark"/>
+       <iconset theme="dark">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>duration (min)</string>
       </property>
      </column>
      <column>

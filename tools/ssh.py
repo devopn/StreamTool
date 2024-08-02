@@ -1,5 +1,5 @@
 import paramiko
-from config import ConfigTool 
+from .config import ConfigTool 
 class SshTool:
 
     @staticmethod
