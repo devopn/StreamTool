@@ -128,7 +128,10 @@ class Ui(QtWidgets.QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        ssh.start()
+        try:
+            ssh.start()
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Error", str(e) + "\n\nПроверьте конфигурацию и перезапустите программу")
 
         # bind menu elements
         self.ui.action_config.triggered.connect(self.showConfig)
