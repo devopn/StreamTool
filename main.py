@@ -47,6 +47,24 @@ class Streams(QtWidgets.QDialog):
         super(Streams, self).__init__(parent)
         self.ui = Ui_Streams()
         self.ui.setupUi(self)
+        self.update()
+        self.ui.buttonDisable.clicked.connect(self.remove)
+
+    def update(self):
+        self.ui.listStreams.clear()
+        data = ssh.list_streams()
+        for line in data.split("\n"):
+            if "stream" in line:
+                self.ui.listStreams.addItem(line)
+
+    def remove(self):
+        selected = self.ui.listStreams.selectedItems()
+        for item in selected:
+            a = item.text().strip().split(".")[0]
+            ssh.kill_stream(a)
+            self.update()
+
+    
         
 
 class TemplateEditor(QtWidgets.QDialog):
@@ -123,9 +141,33 @@ class Ui(QtWidgets.QMainWindow):
         self.ui.buttonTemplateDelete.clicked.connect(self.deleteTemplate)
         self.ui.buttonDateDelete.clicked.connect(self.deleteDate)
         self.ui.buttonDateSave.clicked.connect(self.saveDate)
+
+        # check threads
+        self.checkCPUTimer = QtCore.QTimer(self)
+        self.checkCPUTimer.setInterval(10000)
+        self.checkCPUTimer.timeout.connect(self.checkThreads)
+        self.checkCPUTimer.start()
+        self.checkThreads()
+
+        # bind calendar
+        self.ui.calendar.selectionChanged.connect(self.updateDate)
+
         
         self.updateTemplates()
         self.show()
+
+    def updateDate(self):
+        date = self.ui.calendar.selectedDate().toString("dd-MM-yyyy")
+        streams = ssh.get_streams(date)
+        self.ui.listDateInfo.clear()
+        for stream in streams.split("\n"):
+            self.ui.listDateInfo.addItem(stream)
+
+    def checkThreads(self):
+        result = ssh.execute("screen -ls")
+        result = result.split("\n")
+        result = len([x for x in result if "stream" in x])
+        self.ui.statusbar.showMessage(str(result) + " активных потоков")
 
     def updateTemplates(self):
         templates = TemplateTool.read()
@@ -171,10 +213,17 @@ class Ui(QtWidgets.QMainWindow):
 
     def saveDate(self):
         date = self.ui.calendar.selectedDate().toString("dd.MM.yyyy")
-        print(date)
+        templates = TemplateTool.read()
+        item = self.ui.listTemplates.currentItem()
+        if item:
+            template:list[dict] = templates.get(item.text())
+            if template:
+                for t in template:
+                    ssh.create_stream(t.get("filename"), f'{t.get("time")} {date}', t.get("duration"), t.get("key"))
+            self.updateDate()
     
     def deleteDate(self):
-        date = self.ui.calendar.selectedDate().toString("dd.MM.yyyy")
+        date = self.ui.calendar.selectedDate().toString("dd-MM-yyyy")
         # ask
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Warning)
@@ -185,6 +234,7 @@ class Ui(QtWidgets.QMainWindow):
         result = msg.exec_()
         if result == QtWidgets.QMessageBox.Yes:
             ssh.delete_stream(date)
+        self.updateDate()
 
 
     
@@ -192,4 +242,6 @@ class Ui(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = Ui()
-    sys.exit(app.exec_())
+    a = app.exec_()
+    ssh.stop()
+    sys.exit()

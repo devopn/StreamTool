@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
-    <height>461</height>
+    <width>912</width>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -112,6 +112,24 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="buttonDateSave">
+        <property name="text">
+         <string>Установить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonDateDelete">
+        <property name="text">
+         <string>Удалить</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <widget class="QLabel" name="labelDateInfo">
         <property name="font">
          <font>
@@ -130,18 +148,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonDateSave">
-        <property name="text">
-         <string>Установить</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttonDateDelete">
-        <property name="text">
-         <string>Удалить</string>
-        </property>
-       </widget>
+       <widget class="QListWidget" name="listDateInfo"/>
       </item>
      </layout>
     </item>
@@ -153,7 +160,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>788</width>
+     <width>912</width>
      <height>22</height>
     </rect>
    </property>

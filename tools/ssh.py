@@ -21,16 +21,28 @@ class SshTool:
     
     def create_stream(self, filename: str, time: str,duration: int, key: str) -> str:
         result = self.execute(
-            f"echo 'screen -d -m -S stream_{filename[:15]}_{time} timeout {duration} ffmpeg -re -i /var/stream{filename} -c copy -f flv rtmp://a.rtmp.youtube.com/live2/{key}' | at {time}"
+            f"echo 'screen -d -m -S stream_{filename[:15]}_{time.replace(' ', '_')} timeout {duration*60} ffmpeg -re -i /var/stream/{filename} -c copy -f flv {key}' | at {time}"
             )
         return result
     
-    def kill_stream(self, stream_name: str) -> str:
-        result = self.execute(f"screen -S {stream_name} -X quit")
+    def kill_stream(self, stream_id: str) -> str:
+        result = self.execute(f"screen -XS {stream_id} quit")
+        return result
+    
+    def list_streams(self) -> str:
+        result = self.execute("screen -ls")
+        return result
+    
+    def get_streams(self, date: str) -> str:
+        result = self.execute(f'atq -o "%d-%m-%Y %H:%M:%S" | grep {date}')
         return result
     
     def delete_stream(self, date: str) -> str:
-        pass
+        result = self.execute(f'atq -o "%d-%m-%Y %H:%M:%S" | grep {date}')
+        for i in result.split("\n"):
+            a = i.split()
+            if a:
+                self.execute(f'atrm {a[0]}')
     def stop(self):
         self._ssh_client.close()
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>669</width>
+    <width>868</width>
     <height>692</height>
    </rect>
   </property>
@@ -61,7 +61,7 @@
       <bool>true</bool>
      </attribute>
      <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>150</number>
+      <number>200</number>
      </attribute>
      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
       <bool>false</bool>
@@ -96,26 +96,26 @@
      <row/>
      <column>
       <property name="text">
-       <string>start</string>
+       <string>Время начала</string>
       </property>
       <property name="icon">
        <iconset theme="dark">
-        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
+        <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>duration (min)</string>
+       <string>Продолжительность в мин.</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>filename</string>
+       <string>Название файла</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>key</string>
+       <string>Ссылка трансляции</string>
       </property>
      </column>
     </widget>
