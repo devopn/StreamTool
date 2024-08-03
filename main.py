@@ -174,6 +174,8 @@ class Ui(QtWidgets.QMainWindow):
 
     def updateTemplates(self):
         templates = TemplateTool.read()
+        if not templates:
+            return
         self.ui.listTemplates.clear()
         for temp_name in templates.keys():
             self.ui.listTemplates.addItem(temp_name)
