@@ -35,7 +35,7 @@ class Ui_Template(object):
         self.tableSchedule.setGridStyle(QtCore.Qt.SolidLine)
         self.tableSchedule.setWordWrap(True)
         self.tableSchedule.setCornerButtonEnabled(True)
-        self.tableSchedule.setRowCount(25)
+        self.tableSchedule.setRowCount(50)
         self.tableSchedule.setColumnCount(4)
         self.tableSchedule.setObjectName("tableSchedule")
         item = QtWidgets.QTableWidgetItem()

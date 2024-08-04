@@ -135,6 +135,7 @@ class Ui(QtWidgets.QMainWindow):
             cfg = Configurator(self)
             cfg.show()
             cfg.exec_()
+            sys.exit(0)
 
         # bind menu elements
         self.ui.action_config.triggered.connect(self.showConfig)
@@ -170,10 +171,9 @@ class Ui(QtWidgets.QMainWindow):
             self.ui.listDateInfo.addItem(stream)
 
     def checkThreads(self):
-        result = ssh.execute("screen -ls")
-        result = result.split("\n")
-        result = len([x for x in result if "stream" in x])
-        self.ui.statusbar.showMessage(str(result) + " активных потоков")
+        result = ssh.execute("mpstat 1 1")
+        result = result.split("\n")[4].split()[2]
+        self.ui.statusbar.showMessage(f"Нагрузка {result}%")
 
     def updateTemplates(self):
         templates = TemplateTool.read()
@@ -197,8 +197,17 @@ class Ui(QtWidgets.QMainWindow):
         self.updateTemplates()
 
     def editTemplate(self):
-        name = self.ui.listTemplates.currentItem().text()
-        template = TemplateEditor(self, name)
+        name = self.ui.listTemplates.currentItem()
+        if not name:
+            q = QtWidgets.QMessageBox()
+            q.setIcon(QtWidgets.QMessageBox.Warning)
+            q.setText("Выберите шаблон")
+            q.setWindowTitle("Подтверждение")
+            q.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            q.setDefaultButton(QtWidgets.QMessageBox.Ok)
+            q.exec_()
+            return
+        template = TemplateEditor(self, name.text())
         template.show()
         template.exec_()
         self.updateTemplates()
