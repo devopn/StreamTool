@@ -7,7 +7,7 @@ class TemplateTool:
     @staticmethod
     def read() -> dict:
         appdata = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.ConfigLocation)
-        data = None
+        data = {}
         if os.path.exists(appdata+"/streamtool/templates.json"):
             file = open(appdata+"/streamtool/templates.json", "r")
             file_data = file.read()
@@ -21,8 +21,6 @@ class TemplateTool:
         if not os.path.exists(appdata+"/streamtool"):
             os.mkdir(appdata+"/streamtool")
         data = TemplateTool.read()
-        if not data:
-            data = {}
         data[name] = template
         json.dump(data, open(appdata+"/streamtool/templates.json", "w"), indent=4)
 
