@@ -19,41 +19,29 @@ class SshTool:
         self.isStarted = True
 
     def execute(self, command: str) -> str:
-        if not self.isStarted:
-            return ""
         print(command)
         stdin, stdout, stderr = self._ssh_client.exec_command(command)
         return stdout.read().decode("utf-8")
     
     def create_stream(self, filename: str, time: str,duration: int, key: str) -> str:
-        if not self.isStarted:
-            return ""
         result = self.execute(
             f"echo 'screen -d -m -S stream_{filename[:15]}_{time.replace(' ', '_')} timeout {duration*60} ffmpeg -re -i /var/stream/{filename} -c copy -f flv {key}' | at {time}"
             )
         return result
     
     def kill_stream(self, stream_id: str) -> str:
-        if not self.isStarted:
-            return ""
         result = self.execute(f"screen -XS {stream_id} quit")
         return result
     
     def list_streams(self) -> str:
-        if not self.isStarted:
-            return ""
         result = self.execute("screen -ls")
         return result
     
     def get_streams(self, date: str) -> str:
-        if not self.isStarted:
-            return ""
         result = self.execute(f'atq -o "%d-%m-%Y %H:%M:%S" | grep {date}')
         return result
     
     def delete_stream(self, date: str) -> str:
-        if not self.isStarted:
-            return ""
         result = self.execute(f'atq -o "%d-%m-%Y %H:%M:%S" | grep {date}')
         for i in result.split("\n"):
             a = i.split()

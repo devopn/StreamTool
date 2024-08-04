@@ -132,6 +132,9 @@ class Ui(QtWidgets.QMainWindow):
             ssh.start()
         except Exception as e:
             QtWidgets.QMessageBox.critical(self, "Error", str(e) + "\n\nПроверьте конфигурацию и перезапустите программу")
+            cfg = Configurator(self)
+            cfg.show()
+            cfg.exec_()
 
         # bind menu elements
         self.ui.action_config.triggered.connect(self.showConfig)
@@ -220,6 +223,18 @@ class Ui(QtWidgets.QMainWindow):
         date = self.ui.calendar.selectedDate().toString("dd.MM.yyyy")
         templates = TemplateTool.read()
         item = self.ui.listTemplates.currentItem()
+        if not item:
+            q = QtWidgets.QMessageBox()
+            q.setIcon(QtWidgets.QMessageBox.Warning)
+            q.setText("Выберите шаблон")
+            q.setWindowTitle("Подтверждение")
+            q.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            q.setDefaultButton(QtWidgets.QMessageBox.Ok)
+            q.exec_()
+            return
+
+        if not templates:
+            return
         if item:
             template:list[dict] = templates.get(item.text())
             if template:
